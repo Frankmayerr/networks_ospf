@@ -1,4 +1,4 @@
-œŒÃ≈ÕﬂÀ À”œ¡› »
+Add loopbacks
 
 R2AR0>enable
 R2AR0#conf t
@@ -24,7 +24,7 @@ R2AR0(config-router)#exit
 R2AR0(config)#router ospf 1
 R2AR0(config-router)#redistribute rip subnets
 
-ÿ¿√ 7 _______________________________________________________________________
+Step 7 _______________________________________________________________________
 Router(config)#int s2/0
 Router(config-if)#no shutdown 
 
@@ -80,7 +80,7 @@ Router(config-if)#ip address 172.20.3.1 255.255.255.0
 Router(config-if)#exit
 _______________________________________________________________________
 
-ÿ¿√ 8
+Step 8
 
 ASBR(config)#router ospf 1
 ASBR(config-router)#area 1 stub
@@ -101,8 +101,7 @@ ABR(config-router)#area 1 stub
 ABR(config-router)#
 00:47:20: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial3/0 from LOADING to FULL, Loading Done
 
-ÿ¿√ 9
-
+Step 9
 
 R1AR1(config-router)#do sh ip ro
 Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
