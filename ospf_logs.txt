@@ -1,0 +1,153 @@
+œŒÃ≈ÕﬂÀ À”œ¡› »
+
+R2AR0>enable
+R2AR0#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R2AR0(config)#int loopback 0
+R2AR0(config-if)#ip address 10.15.0.1 255.255.255.255
+R2AR0(config-if)#exit
+R2AR0(config)#int loopback 1
+R2AR0(config-if)#ip address 10.15.1.1 255.255.255.255
+R2AR0(config-if)#exit
+R2AR0(config)#int loopback 2
+R2AR0(config-if)#ip address 10.15.2.1 255.255.255.255
+R2AR0(config-if)#exit
+R2AR0(config)#int loopback 3
+R2AR0(config-if)#ip address 10.15.3.1 255.255.255.255
+R2AR0(config-if)#exit
+
+
+R2AR0(config)#router rip
+R2AR0(config-router)#version 2
+R2AR0(config-router)#network 10.0.0.0
+R2AR0(config-router)#exit
+R2AR0(config)#router ospf 1
+R2AR0(config-router)#redistribute rip subnets
+
+ÿ¿√ 7 _______________________________________________________________________
+Router(config)#int s2/0
+Router(config-if)#no shutdown 
+
+%LINK-5-CHANGED: Interface Serial2/0, changed state to up
+
+Router(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial2/0, changed state to up
+
+Router(config-if)#description CONNECTION TO R2AR0
+Router(config-if)#ip address 10.3.3.2 255.255.255.0
+Router(config-if)#exit
+Router(config)#router rip
+Router(config-router)#version 2
+Router(config-router)#no auto-summary 
+Router(config-router)#network 10.0.0.0
+Router(config-router)#network 172.20.0.0
+Router(config-router)#exit
+Router(config)#int loop0
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface Loopback0, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up
+
+Router(config-if)#ip address 172.20.0.1 255.255.255.0
+Router(config-if)#exit
+Router(config)#int loop1
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface Loopback1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up
+
+Router(config-if)#ip address 172.20.1.1 255.255.255.0
+Router(config-if)#exit
+Router(config)#int loop2
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface Loopback2, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback2, changed state to up
+
+Router(config-if)#ip address 172.20.2.1 255.255.255.0
+Router(config-if)#exit
+Router(config)#int loop3
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface Loopback3, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback3, changed state to up
+
+Router(config-if)#ip address 172.20.3.1 255.255.255.0
+Router(config-if)#exit
+_______________________________________________________________________
+
+ÿ¿√ 8
+
+ASBR(config)#router ospf 1
+ASBR(config-router)#area 1 stub
+ASBR(config-router)#
+00:43:41: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial2/0 from FULL to DOWN, Neighbor Down: Adjacency forced to reset
+00:43:41: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial2/0 from FULL to DOWN, Neighbor Down: Interface down or detached
+00:46:20: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial2/0 from LOADING to FULL, Loading Done
+
+R1AR1(config)#router ospf 1
+R1AR1(config-router)#area 1 stub
+R1AR1(config-router)#
+00:46:14: %OSPF-5-ADJCHG: Process 1, Nbr 1.1.2.2 on Serial2/0 from FULL to DOWN, Neighbor Down: Adjacency forced to reset
+00:46:14: %OSPF-5-ADJCHG: Process 1, Nbr 1.1.2.2 on Serial2/0 from FULL to DOWN, Neighbor Down: Interface down or detached
+00:46:20: %OSPF-5-ADJCHG: Process 1, Nbr 4.4.4.4 on Serial3/0 from LOADING to FULL, Loading Done
+
+ABR(config)#router ospf 1
+ABR(config-router)#area 1 stub
+ABR(config-router)#
+00:47:20: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial3/0 from LOADING to FULL, Loading Done
+
+ÿ¿√ 9
+
+
+R1AR1(config-router)#do sh ip ro
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is 192.168.1.1 to network 0.0.0.0
+
+     10.0.0.0/24 is subnetted, 2 subnets
+O IA    10.1.1.0 [110/128] via 192.168.1.1, 00:01:29, Serial2/0
+O IA    10.2.2.0 [110/129] via 192.168.1.1, 00:01:29, Serial2/0
+C    192.168.1.0/24 is directly connected, Serial2/0
+C    192.168.2.0/24 is directly connected, Serial3/0
+O*IA 0.0.0.0/0 [110/65] via 192.168.1.1, 00:01:18, Serial2/0
+
+
+ASBR(config)#router ospf 1
+ASBR(config-router)#no area 1 stub
+ASBR(config-router)#
+00:59:36: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial2/0 from FULL to DOWN, Neighbor Down: Adjacency forced to reset
+00:59:36: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial2/0 from FULL to DOWN, Neighbor Down: Interface down or detached
+ASBR(config-router)#area 1 nssa
+01:01:01: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial2/0 from LOADING to FULL, Loading Done
+
+R1AR1(config)#router ospf 1
+R1AR1(config-router)#no area 1 stub
+R1AR1(config-router)#
+01:00:55: %OSPF-5-ADJCHG: Process 1, Nbr 1.1.2.2 on Serial2/0 from FULL to DOWN, Neighbor Down: Adjacency forced to reset
+01:00:55: %OSPF-5-ADJCHG: Process 1, Nbr 1.1.2.2 on Serial2/0 from FULL to DOWN, Neighbor Down: Interface down or detached
+R1AR1(config-router)#area 1 nssa
+R1AR1(config-router)#
+01:01:01: %OSPF-5-ADJCHG: Process 1, Nbr 4.4.4.4 on Serial3/0 from LOADING to FULL, Loading Done
+
+ABR(config)#router ospf 1
+ABR(config-router)#no area 1 stub
+ABR(config-router)#area 1 nssa
+01:03:51: %OSPF-5-ADJCHG: Process 1, Nbr 3.3.3.3 on Serial3/0 from LOADING to FULL, Loading Done
+
+ABR(config-router)#router ospf 1
+ABR(config-router)#area 1 nssa
+ABR(config-router)#default-information originate
+
+ASBR(config)#router ospf 1
+ASBR(config-router)#redistribute static subnets
